@@ -6,10 +6,12 @@ import { colors, spacing, typography } from '../../src/theme';
 import { purchasePro, restorePurchases } from '../../src/services/payments';
 import { setIsPro } from '../../src/services/storage';
 import { trackPurchase } from '../../src/services/analytics';
+import { getExpoConfig } from '../../src/config/expo-config';
 
 export default function PaywallScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { MARKETING_NAME } = getExpoConfig();
 
   const handlePurchase = async () => {
     setLoading(true);
@@ -55,7 +57,7 @@ export default function PaywallScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Text style={styles.badge}>✨ PRO</Text>
-          <Text style={styles.title}>Cerveau Vif Pro</Text>
+          <Text style={styles.title}>{MARKETING_NAME} Pro</Text>
           <Text style={styles.subtitle}>Entraînez-vous sans limites</Text>
         </View>
 

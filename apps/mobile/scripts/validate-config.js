@@ -14,7 +14,7 @@ const requiredAssets = ['icon.png', 'adaptive-icon.png', 'splash.png', 'favicon.
 let hasErrors = false;
 let hasWarnings = false;
 
-console.log('🔍 Validating Cerveau Vif Configuration\n');
+console.log('🔍 Validating Lucido Configuration\n');
 
 // Check 1: Assets exist
 console.log('📁 Checking assets...');
@@ -40,8 +40,8 @@ if (fs.existsSync(configPath)) {
   const configContent = fs.readFileSync(configPath, 'utf8');
 
   // Check bundle identifiers
-  if (configContent.includes('com.tonorg.cerveauvif')) {
-    console.log('   ✅ Bundle identifiers configured');
+  if (configContent.includes('com.ririapps.lucido.tyb')) {
+    console.log('   ✅ Bundle identifiers configured (com.ririapps.lucido.tyb)');
   } else {
     console.log('   ⚠️  Bundle identifiers may need updating');
     hasWarnings = true;

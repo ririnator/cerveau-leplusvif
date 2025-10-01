@@ -20,7 +20,7 @@ function getEnvConfig() {
 
   if (missingKeys.length > 0) {
     console.warn(
-      `⚠️  [Cerveau Vif] Missing optional env vars: ${missingKeys.join(', ')}\n` +
+      `⚠️  [Lucido] Missing optional env vars: ${missingKeys.join(', ')}\n` +
       `   Services will run in no-op/stub mode. Add them to .env for full functionality.`
     );
   }
@@ -33,13 +33,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
   return {
     ...config,
-    name: 'Cerveau Vif',
-    slug: 'cerveau-vif',
+    name: 'Lucido TYB',
+    slug: 'lucido',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'dark',
-    scheme: 'cerveauvif',
+    scheme: 'lucido',
     runtimeVersion: {
       policy: 'appVersion',
     },
@@ -51,9 +51,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.tonorg.cerveauvif',
+      bundleIdentifier: 'com.ririapps.lucido.tyb',
       infoPlist: {
         UIBackgroundModes: [],
+        CFBundleDisplayName: 'Lucido TYB',
       },
     },
     android: {
@@ -61,7 +62,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#0a0a0a',
       },
-      package: 'com.tonorg.cerveauvif',
+      package: 'com.ririapps.lucido.tyb',
     },
     web: {
       favicon: './assets/favicon.png',
@@ -69,6 +70,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
     plugins: ['expo-router'],
     extra: {
+      MARKETING_NAME: 'Lucido – Train Your Brain',
       POSTHOG_KEY: env.POSTHOG_KEY,
       POSTHOG_HOST: env.POSTHOG_HOST,
       REVENUECAT_APPLE: env.REVENUECAT_APPLE,

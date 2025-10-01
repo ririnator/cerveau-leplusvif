@@ -2,9 +2,11 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, spacing, typography } from '../../src/theme';
+import { getExpoConfig } from '../../src/config/expo-config';
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const { MARKETING_NAME } = getExpoConfig();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -18,13 +20,13 @@ export default function SettingsScreen() {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Version</Text>
-          <Text style={styles.sectionText}>Cerveau Vif v1.0.0</Text>
+          <Text style={styles.sectionText}>{MARKETING_NAME} v1.0.0</Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>À propos</Text>
           <Text style={styles.sectionText}>
-            Cerveau Vif est une application d'entraînement cognitif qui mesure et améliore votre
+            {MARKETING_NAME} est une application d'entraînement cognitif qui mesure et améliore votre
             vitesse de traitement, attention et mémoire de travail.
           </Text>
         </View>

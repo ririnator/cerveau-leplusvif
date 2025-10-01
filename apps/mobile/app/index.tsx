@@ -10,6 +10,7 @@ import {
   canPlayToday,
   isPro,
 } from '../src/services/storage';
+import { getExpoConfig } from '../src/config/expo-config';
 import type { SessionResult } from '@cerveau-vif/core-logic';
 
 export default function HomeScreen() {
@@ -19,6 +20,8 @@ export default function HomeScreen() {
   const [lastSession, setLastSession] = useState<SessionResult | null>(null);
   const [canPlay, setCanPlay] = useState(true);
   const [isProUser, setIsProUser] = useState(false);
+
+  const { MARKETING_NAME } = getExpoConfig();
 
   useEffect(() => {
     loadData();
@@ -45,7 +48,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>Cerveau Vif</Text>
+          <Text style={styles.title}>{MARKETING_NAME}</Text>
           <Text style={styles.subtitle}>10 minutes d'entraînement quotidien</Text>
         </View>
 

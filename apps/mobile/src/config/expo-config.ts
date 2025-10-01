@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
  * Type-safe access to Expo config extra fields
  */
 interface ExpoExtraConfig {
+  MARKETING_NAME: string;
   POSTHOG_KEY: string;
   POSTHOG_HOST: string;
   REVENUECAT_APPLE: string;
@@ -17,6 +18,7 @@ export function getExpoConfig(): ExpoExtraConfig {
   const extra = Constants.expoConfig?.extra || {};
 
   return {
+    MARKETING_NAME: extra.MARKETING_NAME || 'Lucido – Train Your Brain',
     POSTHOG_KEY: extra.POSTHOG_KEY || '',
     POSTHOG_HOST: extra.POSTHOG_HOST || 'https://eu.posthog.com',
     REVENUECAT_APPLE: extra.REVENUECAT_APPLE || '',
