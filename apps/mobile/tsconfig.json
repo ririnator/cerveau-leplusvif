@@ -7,9 +7,16 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-native",
     "paths": {
-      "@cerveau-vif/core-logic": ["../../packages/core-logic/src"]
+      "@cerveau-vif/core-logic": [
+        "../../packages/core-logic/src"
+      ]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
