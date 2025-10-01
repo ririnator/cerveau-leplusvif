@@ -3,11 +3,31 @@
  * Stub for V1, implement fully later
  */
 
-const REVENUECAT_ENABLED = false;
+import { Platform } from 'react-native';
+import { getExpoConfig } from '../config/expo-config';
+
+let REVENUECAT_ENABLED = false;
+let hasWarned = false;
 
 export async function initPurchases(): Promise<void> {
-  if (!REVENUECAT_ENABLED) return;
-  // Purchases.configure({ apiKey })
+  const config = getExpoConfig();
+  const apiKey = Platform.OS === 'ios' ? config.REVENUECAT_APPLE : config.REVENUECAT_ANDROID;
+
+  if (!apiKey) {
+    if (!hasWarned) {
+      console.warn(
+        `[Payments] RevenueCat ${Platform.OS.toUpperCase()} key not configured - running in stub mode`
+      );
+      hasWarned = true;
+    }
+    return;
+  }
+
+  REVENUECAT_ENABLED = true;
+  // TODO: Integrate RevenueCat SDK when ready
+  // import Purchases from 'react-native-purchases';
+  // await Purchases.configure({ apiKey });
+  console.log('[Payments] RevenueCat initialized (stub mode)');
 }
 
 export async function purchasePro(): Promise<boolean> {

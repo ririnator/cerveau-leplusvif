@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="#0a0a0a"/>
+
+  <!-- Border -->
+  <rect x="32" y="32" width="960" height="960" rx="96" fill="none" stroke="#6366f1" stroke-width="8"/>
+
+  <!-- CV Monogram -->
+  <text x="512" y="600" font-family="Arial, sans-serif" font-size="420" font-weight="bold"
+        text-anchor="middle" fill="#6366f1">CV</text>
+
+  <!-- Subtitle -->
+  <text x="512" y="780" font-family="Arial, sans-serif" font-size="80" font-weight="normal"
+        text-anchor="middle" fill="#ffffff" opacity="0.6">CERVEAU VIF</text>
+</svg>

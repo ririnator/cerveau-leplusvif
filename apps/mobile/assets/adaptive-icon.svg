@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Keep content in center 66% for safe area -->
+  <g transform="translate(512, 512)">
+    <!-- CV Monogram -->
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="480" font-weight="bold"
+          text-anchor="middle" fill="#6366f1">CV</text>
+  </g>
+</svg>

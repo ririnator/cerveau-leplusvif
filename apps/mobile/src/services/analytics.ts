@@ -3,12 +3,27 @@
  * Safe no-op if API key not configured
  */
 
-// For now, this is a stub. In production, integrate PostHog SDK
-const POSTHOG_ENABLED = false; // Set to true when API key is configured
+import { getExpoConfig } from '../config/expo-config';
+
+let POSTHOG_ENABLED = false;
+let hasWarned = false;
 
 export function initAnalytics(): void {
-  if (!POSTHOG_ENABLED) return;
-  // PostHog.init(apiKey, options)
+  const config = getExpoConfig();
+
+  if (!config.POSTHOG_KEY) {
+    if (!hasWarned) {
+      console.warn('[Analytics] PostHog key not configured - running in no-op mode');
+      hasWarned = true;
+    }
+    return;
+  }
+
+  POSTHOG_ENABLED = true;
+  // TODO: Integrate PostHog SDK when ready
+  // import PostHog from 'posthog-react-native';
+  // PostHog.init(config.POSTHOG_KEY, { host: config.POSTHOG_HOST });
+  console.log('[Analytics] PostHog initialized (stub mode)');
 }
 
 export function trackEvent(eventName: string, properties?: Record<string, any>): void {
