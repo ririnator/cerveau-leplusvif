@@ -8,9 +8,17 @@ const KEYS = {
   LAST_PLAYED_AT: 'cv.lastPlayedAt',
   LAST_SESSION: 'cv.lastSession',
   SETTINGS: 'cv.settings',
+  SETTINGS_SOUNDS: 'cv.settings.sounds',
+  SETTINGS_HAPTICS: 'cv.settings.haptics',
   FREE_QUOTA_DATE: 'cv.freeQuota.date',
   FREE_QUOTA_COUNT: 'cv.freeQuota.count',
   IS_PRO: 'cv.isPro',
+  FREEZES_LEFT: 'cv.streak.freezesLeft',
+  LAST_FREEZE_RESET: 'cv.streak.lastFreezeReset',
+  FREEZE_USED_MESSAGE: 'cv.streak.freezeUsedMessage',
+  NOTIFICATIONS_ENABLED: 'cv.notifications.enabled',
+  REMINDER_TIME: 'cv.notifications.reminderTime',
+  HAS_COMPLETED_FIRST_SESSION: 'cv.onboarding.firstSessionComplete',
 } as const;
 
 // Generic helpers
@@ -128,13 +136,61 @@ export function canPlayToday(): boolean {
   return getTodayQuotaUsed() < 1;
 }
 
-// Streak management
-export function updateStreakOnSessionComplete(): { currentStreak: number; bestStreak: number } {
+// Freeze management
+export function getFreezesLeft(): number {
+  return getNumber(KEYS.FREEZES_LEFT) ?? 1;
+}
+
+export function setFreezesLeft(value: number): void {
+  setNumber(KEYS.FREEZES_LEFT, value);
+}
+
+export function getLastFreezeReset(): string | undefined {
+  return getString(KEYS.LAST_FREEZE_RESET);
+}
+
+export function setLastFreezeReset(value: string): void {
+  setString(KEYS.LAST_FREEZE_RESET, value);
+}
+
+export function getFreezeUsedMessage(): boolean {
+  return getBoolean(KEYS.FREEZE_USED_MESSAGE) ?? false;
+}
+
+export function setFreezeUsedMessage(value: boolean): void {
+  setBoolean(KEYS.FREEZE_USED_MESSAGE, value);
+}
+
+export function clearFreezeMessage(): void {
+  setFreezeUsedMessage(false);
+}
+
+// Weekly freeze reset (every Monday)
+export function resetWeeklyFreezeIfNeeded(): void {
+  const today = new Date().toISOString().split('T')[0];
+  const lastReset = getLastFreezeReset();
+  const dayOfWeek = new Date().getDay(); // 0 = Sunday, 1 = Monday
+
+  // If it's Monday and we haven't reset this week
+  if (dayOfWeek === 1 && lastReset !== today) {
+    const maxFreeze = isPro() ? 999 : 1; // Pro users get unlimited
+    setFreezesLeft(maxFreeze);
+    setLastFreezeReset(today);
+  }
+}
+
+// Streak management with freeze mechanic
+export function updateStreakOnSessionComplete(): {
+  currentStreak: number;
+  bestStreak: number;
+  freezeUsed: boolean
+} {
   const lastPlayed = getLastPlayedAt();
   const today = new Date().toISOString().split('T')[0];
 
   let currentStreak = getCurrentStreak();
   let bestStreak = getBestStreak();
+  let freezeUsed = false;
 
   if (!lastPlayed) {
     // First session
@@ -149,8 +205,20 @@ export function updateStreakOnSessionComplete(): { currentStreak: number; bestSt
       // Consecutive day
       currentStreak += 1;
     } else {
-      // Streak broken
-      currentStreak = 1;
+      // Gap detected - check for freeze
+      const freezesLeft = getFreezesLeft();
+
+      if (freezesLeft > 0) {
+        // Use freeze to save streak
+        setFreezesLeft(freezesLeft - 1);
+        setFreezeUsedMessage(true);
+        freezeUsed = true;
+        // Streak stays the same
+      } else {
+        // No freeze available - reset streak
+        currentStreak = 1;
+        setFreezeUsedMessage(false);
+      }
     }
   }
 
@@ -162,5 +230,47 @@ export function updateStreakOnSessionComplete(): { currentStreak: number; bestSt
   setBestStreak(bestStreak);
   setLastPlayedAt(new Date().toISOString());
 
-  return { currentStreak, bestStreak };
+  return { currentStreak, bestStreak, freezeUsed };
+}
+
+// Settings management
+export function getSoundEnabled(): boolean {
+  return getBoolean(KEYS.SETTINGS_SOUNDS) ?? true;
+}
+
+export function setSoundEnabled(value: boolean): void {
+  setBoolean(KEYS.SETTINGS_SOUNDS, value);
+}
+
+export function getHapticsEnabled(): boolean {
+  return getBoolean(KEYS.SETTINGS_HAPTICS) ?? true;
+}
+
+export function setHapticsEnabled(value: boolean): void {
+  setBoolean(KEYS.SETTINGS_HAPTICS, value);
+}
+
+// Notification management
+export function getNotificationsEnabled(): boolean {
+  return getBoolean(KEYS.NOTIFICATIONS_ENABLED) ?? false;
+}
+
+export function setNotificationsEnabled(value: boolean): void {
+  setBoolean(KEYS.NOTIFICATIONS_ENABLED, value);
+}
+
+export function getReminderTime(): string {
+  return getString(KEYS.REMINDER_TIME) ?? '20:00';
+}
+
+export function setReminderTime(value: string): void {
+  setString(KEYS.REMINDER_TIME, value);
+}
+
+export function getHasCompletedFirstSession(): boolean {
+  return getBoolean(KEYS.HAS_COMPLETED_FIRST_SESSION) ?? false;
+}
+
+export function setHasCompletedFirstSession(value: boolean): void {
+  setBoolean(KEYS.HAS_COMPLETED_FIRST_SESSION, value);
 }

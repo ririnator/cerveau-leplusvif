@@ -70,7 +70,8 @@ All implemented with:
    - RevenueCat integration (stubbed)
 
 5. **Settings (`app/settings/index.tsx`)**
-   - Basic stub (version, about)
+   - Notification controls (toggle, time picker)
+   - Basic info (version, about)
 
 #### Game Views (components/)
 1. **ArithmeticView** - Numeric keypad + input field
@@ -83,16 +84,24 @@ All implemented with:
    - Session persistence
    - Free quota (1/day reset logic)
    - Pro status
+   - First session completion flag
 
-2. **analytics.ts** - PostHog wrapper
+2. **notifications.ts** - expo-notifications wrapper
+   - Daily reminder scheduling
+   - Smart notification logic (only if no session played)
+   - Auto-cancellation when session played
+   - Time management & permissions
+   - Settings integration
+
+3. **analytics.ts** - PostHog wrapper
    - Safe no-op if not configured
    - Events: session_start, answer, level_up, session_end, paywall_view, purchase
 
-3. **payments.ts** - RevenueCat stub
+4. **payments.ts** - RevenueCat stub
    - purchasePro(), restorePurchases(), checkProStatus()
    - Console logging for now
 
-4. **auth.ts** - Supabase stub (Phase 3)
+5. **auth.ts** - Supabase stub (Phase 3)
 
 #### Hooks (hooks/)
 1. **useSessionRunner.ts**

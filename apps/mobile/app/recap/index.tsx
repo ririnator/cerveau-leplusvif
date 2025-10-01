@@ -3,9 +3,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { colors, spacing, typography } from '../../src/theme';
-import { getLastSession, canPlayToday, isPro, getCurrentStreak } from '../../src/services/storage';
+import {
+  getLastSession,
+  canPlayToday,
+  isPro,
+  getCurrentStreak,
+  getHasCompletedFirstSession,
+  setHasCompletedFirstSession,
+} from '../../src/services/storage';
 import { trackPaywallView } from '../../src/services/analytics';
 import type { SessionResult } from '@cerveau-vif/core-logic';
+import { ReminderTimeModal } from '../../src/components/ReminderTimeModal';
+import { enableNotifications, scheduleDailyReminder } from '../../src/services/notifications';
 
 export default function RecapScreen() {
   const router = useRouter();
@@ -13,9 +22,17 @@ export default function RecapScreen() {
   const [canPlay, setCanPlay] = useState(false);
   const [isProUser, setIsProUser] = useState(false);
   const [streak, setStreak] = useState(0);
+  const [showReminderModal, setShowReminderModal] = useState(false);
 
   useEffect(() => {
     loadData();
+  }, []);
+
+  useEffect(() => {
+    if (!getHasCompletedFirstSession()) {
+      // Short delay to let user see recap first
+      setTimeout(() => setShowReminderModal(true), 1500);
+    }
   }, []);
 
   const loadData = () => {
@@ -37,6 +54,20 @@ export default function RecapScreen() {
 
   const handleGoHome = () => {
     router.replace('/');
+  };
+
+  const handleReminderSetup = async (time: string) => {
+    setHasCompletedFirstSession(true);
+    const granted = await enableNotifications();
+    if (granted) {
+      await scheduleDailyReminder(time, streak);
+    }
+    setShowReminderModal(false);
+  };
+
+  const handleReminderSkip = () => {
+    setHasCompletedFirstSession(true);
+    setShowReminderModal(false);
   };
 
   const getGameName = (type: string) => {
@@ -163,6 +194,12 @@ export default function RecapScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <ReminderTimeModal
+        visible={showReminderModal}
+        onConfirm={handleReminderSetup}
+        onCancel={handleReminderSkip}
+      />
     </SafeAreaView>
   );
 }

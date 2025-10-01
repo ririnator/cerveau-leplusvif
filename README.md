@@ -32,6 +32,13 @@ Cerveau Vif (Sharp Mind) is a mobile application that provides daily 10-minute c
   - Pro subscription: unlimited sessions + advanced stats
   - In-app purchase via RevenueCat
 
+- **Daily Reminders**
+  - Smart notification prompt appears after first session completion (not on first launch)
+  - User chooses reminder time (default: 20:00)
+  - Notifications fire daily only if no session played yet
+  - Auto-cancel if user plays before reminder time
+  - Full Settings control (toggle, time picker)
+
 - **Analytics Integration**
   - PostHog event tracking (session_start, answer, level_up, session_end, paywall_view, purchase)
   - Safe no-op mode when API keys not configured
@@ -51,8 +58,8 @@ Cerveau Vif (Sharp Mind) is a mobile application that provides daily 10-minute c
 │       │   ├── paywall/     # Pro subscription
 │       │   └── settings/    # Settings
 │       └── src/
-│           ├── components/  # Game views (Arithmetic, Sequences, Stroop)
-│           ├── services/    # Storage, Analytics, Payments, Auth
+│           ├── components/  # Game views, ReminderTimeModal
+│           ├── services/    # Storage, Analytics, Payments, Notifications
 │           ├── theme/       # Colors, spacing, typography
 │           └── hooks/       # useSessionRunner
 │
@@ -76,6 +83,7 @@ Cerveau Vif (Sharp Mind) is a mobile application that provides daily 10-minute c
 - **Navigation**: expo-router
 - **State Management**: React hooks + reducers
 - **Storage**: react-native-mmkv (fast local persistence)
+- **Notifications**: expo-notifications (local daily reminders)
 - **Analytics**: PostHog (with safe stubs)
 - **Payments**: RevenueCat (with stubs for V1)
 - **Auth**: Supabase (planned Phase 3)

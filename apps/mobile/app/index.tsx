@@ -9,9 +9,13 @@ import {
   getLastSession,
   canPlayToday,
   isPro,
+  resetWeeklyFreezeIfNeeded,
+  getFreezeUsedMessage,
+  clearFreezeMessage,
 } from '../src/services/storage';
 import { getExpoConfig } from '../src/config/expo-config';
 import type { SessionResult } from '@cerveau-vif/core-logic';
+import { initializeNotifications } from '../src/services/notifications';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -20,19 +24,35 @@ export default function HomeScreen() {
   const [lastSession, setLastSession] = useState<SessionResult | null>(null);
   const [canPlay, setCanPlay] = useState(true);
   const [isProUser, setIsProUser] = useState(false);
+  const [showFreezeMessage, setShowFreezeMessage] = useState(false);
 
   const { MARKETING_NAME } = getExpoConfig();
 
   useEffect(() => {
     loadData();
+    initializeApp();
   }, []);
 
+  const initializeApp = async () => {
+    // Initialize notifications if enabled (no first-launch modal)
+    await initializeNotifications();
+  };
+
   const loadData = () => {
+    // Reset weekly freeze if needed
+    resetWeeklyFreezeIfNeeded();
+
     setCurrentStreak(getCurrentStreak());
     setBestStreak(getBestStreak());
     setLastSession(getLastSession<SessionResult>());
     setCanPlay(canPlayToday());
     setIsProUser(isPro());
+    setShowFreezeMessage(getFreezeUsedMessage());
+  };
+
+  const handleDismissFreezeMessage = () => {
+    clearFreezeMessage();
+    setShowFreezeMessage(false);
   };
 
   const handlePlaySession = () => {
@@ -45,6 +65,16 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Settings button - outside ScrollView for proper positioning */}
+      <TouchableOpacity
+        onPress={() => router.push('/settings')}
+        accessibilityLabel="Ouvrir les paramètres"
+        testID="btn-open-settings"
+        style={styles.settingsButton}
+      >
+        <Text style={styles.settingsIcon}>⚙️</Text>
+      </TouchableOpacity>
+
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
@@ -54,7 +84,14 @@ export default function HomeScreen() {
 
         {/* Streak Card */}
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Série</Text>
+          <View style={styles.streakHeader}>
+            <Text style={styles.cardTitle}>🔥 Série</Text>
+            {showFreezeMessage && (
+              <TouchableOpacity onPress={handleDismissFreezeMessage}>
+                <Text style={styles.freezeMessage}>Série sauvée par freeze ✨</Text>
+              </TouchableOpacity>
+            )}
+          </View>
           <View style={styles.streakRow}>
             <View style={styles.streakItem}>
               <Text style={styles.streakValue}>{currentStreak}</Text>
@@ -142,6 +179,21 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     gap: spacing.lg,
   },
+  settingsButton: {
+    position: 'absolute',
+    top: 50,
+    right: spacing.lg,
+    zIndex: 999,
+    backgroundColor: colors.surface,
+    borderRadius: 20,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  settingsIcon: {
+    fontSize: 20,
+  },
   header: {
     alignItems: 'center',
     marginTop: spacing.xl,
@@ -169,6 +221,15 @@ const styles = StyleSheet.create({
     fontWeight: typography.weights.semibold,
     color: colors.text,
     marginBottom: spacing.md,
+  },
+  streakHeader: {
+    marginBottom: spacing.sm,
+  },
+  freezeMessage: {
+    fontSize: typography.sizes.sm,
+    color: colors.primary,
+    fontStyle: 'italic',
+    marginTop: spacing.xs,
   },
   streakRow: {
     flexDirection: 'row',
