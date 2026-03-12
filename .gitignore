@@ -35,8 +35,8 @@ out/
 
 # expo
 .expo/
-dist/
 web-build/
+apps/mobile/dist/
 
 # react-native
 .expo-shared/
