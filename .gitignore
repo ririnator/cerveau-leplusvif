@@ -29,6 +29,10 @@ yarn-error.log*
 # turbo
 .turbo
 
+# next.js
+.next/
+out/
+
 # expo
 .expo/
 dist/
