@@ -79,7 +79,7 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>{MARKETING_NAME}</Text>
-          <Text style={styles.subtitle}>10 minutes d'entraînement quotidien</Text>
+          <Text style={styles.subtitle}>3 minutes d'entraînement quotidien</Text>
         </View>
 
         {/* Streak Card */}
@@ -153,7 +153,7 @@ export default function HomeScreen() {
           activeOpacity={0.8}
         >
           <Text style={styles.playButtonText}>
-            {canPlay || isProUser ? 'Jouer 10:00' : 'Débloquer Pro'}
+            {canPlay || isProUser ? 'Jouer 3:00' : 'Débloquer Pro'}
           </Text>
         </TouchableOpacity>
 

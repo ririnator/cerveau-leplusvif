@@ -11,6 +11,14 @@ import {
   type SessionResult,
 } from '@cerveau-vif/core-logic';
 import { trackSessionStart, trackAnswer, trackLevelUp, trackSessionEnd } from '../services/analytics';
+import {
+  updateStreakOnSessionComplete,
+  setLastSession,
+  incrementQuotaUsed,
+  getReminderTime,
+  getNotificationsEnabled,
+} from '../services/storage';
+import { scheduleDailyReminder } from '../services/notifications';
 
 export interface GameProgress {
   type: GameType;
@@ -42,6 +50,29 @@ export function useSessionRunner() {
   useEffect(() => {
     startSession();
   }, []);
+
+  // Check session timeout every second
+  useEffect(() => {
+    if (!isSessionActive) return;
+
+    const interval = setInterval(() => {
+      const sessionElapsed = (Date.now() - sessionStartTime) / 1000;
+      const gameElapsed = (Date.now() - gameStartTime) / 1000;
+
+      // End session if 3 minutes elapsed
+      if (sessionElapsed >= 180) {
+        endSession();
+        return;
+      }
+
+      // End current game if 60 seconds elapsed
+      if (gameElapsed >= 60) {
+        endGame();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isSessionActive, sessionStartTime, gameStartTime]);
 
   const startSession = () => {
     const now = Date.now();
@@ -104,9 +135,9 @@ export function useSessionRunner() {
 
     setProblemStartTime(Date.now());
 
-    // Check if game time is up (180 seconds)
+    // Check if game time is up (200 seconds = 3:20)
     const gameElapsed = (Date.now() - gameStartTime) / 1000;
-    if (gameElapsed >= 180) {
+    if (gameElapsed >= 200) {
       endGame();
     }
   };
@@ -144,13 +175,30 @@ export function useSessionRunner() {
     const result = composer.current.finalize(sessionState);
     setSessionResult(result);
 
+    // Save session result to storage
+    setLastSession(result);
+
+    // Update streak (with freeze mechanic)
+    const streakResult = updateStreakOnSessionComplete();
+
+    // Increment daily quota
+    incrementQuotaUsed();
+
+    // Reschedule daily reminder with updated streak
+    if (getNotificationsEnabled()) {
+      const reminderTime = getReminderTime();
+      scheduleDailyReminder(reminderTime, streakResult.currentStreak).catch(err =>
+        console.error('[Session] Failed to reschedule notification:', err)
+      );
+    }
+
     // Track analytics
     trackSessionEnd(result.totalScore, result.accuracy, result.durationSec);
   };
 
   const getTimeRemaining = () => {
     if (!isSessionActive) return 0;
-    const totalDuration = 180 * engines.current.length; // 540 seconds = 9 minutes for games
+    const totalDuration = 180; // 180 seconds = 3 minutes total session
     const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
     return Math.max(0, totalDuration - elapsed);
   };
@@ -158,7 +206,7 @@ export function useSessionRunner() {
   const getGameTimeRemaining = () => {
     if (!isSessionActive) return 0;
     const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
-    return Math.max(0, 180 - elapsed);
+    return Math.max(0, 60 - elapsed);
   };
 
   return {

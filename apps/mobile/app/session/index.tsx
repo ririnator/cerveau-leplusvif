@@ -37,7 +37,7 @@ export default function SessionScreen() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [getTimeRemaining, getGameTimeRemaining]);
 
   useEffect(() => {
     if (sessionResult) {

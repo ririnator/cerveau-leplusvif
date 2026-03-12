@@ -33,10 +33,11 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
   return {
     ...config,
-    name: 'Lucido TYB',
+    name: 'Lucido',
     slug: 'lucido',
     version: '1.0.0',
     orientation: 'portrait',
+    newArchEnabled: true,
     icon: './assets/icon.png',
     userInterfaceStyle: 'dark',
     scheme: 'lucido',
@@ -54,7 +55,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       bundleIdentifier: 'com.ririapps.lucido.tyb',
       infoPlist: {
         UIBackgroundModes: [],
-        CFBundleDisplayName: 'Lucido TYB',
+        CFBundleDisplayName: 'Lucido',
+        NSUserNotificationsUsageDescription: 'Lucido vous envoie des rappels quotidiens pour maintenir votre série d\'entraînement.',
       },
     },
     android: {
@@ -63,12 +65,26 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         backgroundColor: '#0a0a0a',
       },
       package: 'com.ririapps.lucido.tyb',
+      permissions: [
+        'android.permission.POST_NOTIFICATIONS',
+        'android.permission.SCHEDULE_EXACT_ALARM',
+      ],
     },
     web: {
       favicon: './assets/favicon.png',
       bundler: 'metro',
     },
-    plugins: ['expo-router'],
+    plugins: [
+      'expo-router',
+      [
+        'expo-notifications',
+        {
+          icon: './assets/icon.png',
+          color: '#8ab4ff',
+          sounds: [],
+        },
+      ],
+    ],
     extra: {
       MARKETING_NAME: 'Lucido – Train Your Brain',
       POSTHOG_KEY: env.POSTHOG_KEY,

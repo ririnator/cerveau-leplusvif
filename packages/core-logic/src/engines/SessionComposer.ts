@@ -2,13 +2,13 @@ import type { GameEngine, GameType, SessionGameResult, SessionResult } from './G
 
 /**
  * SessionComposer
- * Manages a full 10-minute session with 3 games (3min each) + 1min recap
+ * Manages a full 3-minute session with 3 games (1min each)
  */
 
 export interface SessionConfig {
   games: GameType[];
-  gameDurationSec: number;  // Duration per game (180s)
-  recapDurationSec: number; // Duration for recap (60s)
+  gameDurationSec: number;  // Duration per game (60s)
+  recapDurationSec: number; // Duration for recap (0s)
 }
 
 export interface SessionState {
@@ -31,8 +31,8 @@ export class SessionComposer {
     this.engines = engines;
     this.config = {
       games: engines.map(e => e.type),
-      gameDurationSec: config.gameDurationSec ?? 180,
-      recapDurationSec: config.recapDurationSec ?? 60,
+      gameDurationSec: config.gameDurationSec ?? 60,
+      recapDurationSec: config.recapDurationSec ?? 0,
     };
   }
 

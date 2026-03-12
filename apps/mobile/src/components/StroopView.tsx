@@ -8,16 +8,16 @@ interface Props {
   level: number;
 }
 
+// Map French color names to hex colors (outside component to avoid re-creation)
+const colorMap: Record<string, string> = {
+  rouge: colors.rouge,
+  bleu: colors.bleu,
+  vert: colors.vert,
+  jaune: colors.jaune,
+};
+
 export function StroopView({ problem, onSubmit, level }: Props) {
   const { word, inkColor } = problem.meta;
-
-  // Map French color names to hex colors
-  const colorMap: Record<string, string> = {
-    rouge: colors.rouge,
-    bleu: colors.bleu,
-    vert: colors.vert,
-    jaune: colors.jaune,
-  };
 
   return (
     <View style={styles.container}>

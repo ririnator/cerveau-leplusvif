@@ -89,7 +89,9 @@ describe('StroopEngine', () => {
     const correctResult = engine.next(state, problem.correctAnswer, 500);
     expect(correctResult.state.score).toBeGreaterThan(0);
 
-    const wrongResult = engine.next(state, problem.correctAnswer === 'oui' ? 'non' : 'oui', 500);
+    // Test wrong answer with fresh state and problem
+    const { state: state2, problem: problem2 } = engine.init();
+    const wrongResult = engine.next(state2, problem2.correctAnswer === 'oui' ? 'non' : 'oui', 500);
     expect(wrongResult.correct).toBe(false);
   });
 });

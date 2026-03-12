@@ -32,7 +32,7 @@ const templates = [
   () => `2 hours left to keep your streak alive! ⏰`,
   (streak: number) => `${streak} days strong! Let's make it ${streak + 1} 💪`,
   () => `Ready to train your brain? 🎯 Your daily Lucido session awaits.`,
-  () => `Just 10 minutes today keeps your brain sharp tomorrow 🚀`,
+  () => `Just 3 minutes today keeps your brain sharp tomorrow 🚀`,
 ];
 
 /**

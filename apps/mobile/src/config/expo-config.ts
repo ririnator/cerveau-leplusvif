@@ -5,6 +5,7 @@ import Constants from 'expo-constants';
  */
 interface ExpoExtraConfig {
   MARKETING_NAME: string;
+  VERSION: string;
   POSTHOG_KEY: string;
   POSTHOG_HOST: string;
   REVENUECAT_APPLE: string;
@@ -19,6 +20,7 @@ export function getExpoConfig(): ExpoExtraConfig {
 
   return {
     MARKETING_NAME: extra.MARKETING_NAME || 'Lucido – Train Your Brain',
+    VERSION: Constants.expoConfig?.version || '1.0.0',
     POSTHOG_KEY: extra.POSTHOG_KEY || '',
     POSTHOG_HOST: extra.POSTHOG_HOST || 'https://eu.posthog.com',
     REVENUECAT_APPLE: extra.REVENUECAT_APPLE || '',
